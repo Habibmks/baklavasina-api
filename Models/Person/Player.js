@@ -45,7 +45,11 @@ const playerSchema = mongoose.Schema({
     pPower: {
         power: { type: Number, require: false },
         required: false,
-    }
+    },
+    adress: {
+        type: String,
+        required: false,
+    },
 });
 
 const Player = person.discriminator('PlayerModel', playerSchema);

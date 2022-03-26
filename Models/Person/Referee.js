@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const person = require("./Person");
+const person = require("./person");
 
 const refereeSchema = mongoose.Schema({
     name: {
@@ -53,6 +53,10 @@ const refereeSchema = mongoose.Schema({
             required: false,
         }
     ],
+    adress: {
+        type: String,
+        required: false,
+    },
 });
 
 const Referee = person.discriminator('RefereeModel', refereeSchema);

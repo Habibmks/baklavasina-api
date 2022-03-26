@@ -53,6 +53,10 @@ const observerSchema = mongoose.Schema({
             required: false,
         }
     ],
+    adress: {
+        type: String,
+        required: false,
+    },
 });
 
 const Referee = person.discriminator('ObserverModel', observerSchema);

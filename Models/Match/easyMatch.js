@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
+const match = require('./Match');
 
-const matchOptions = {
-    discriminatorKey: 'matchtype',
-    collection: 'people',
-}
-
-const macthSchema = mongoose.Schema({
-
+const easyMatchSchema = mongoose.Schema({
     //Maç başlama tarihi saati
     startDate: {
         type: Date,
@@ -24,15 +19,15 @@ const macthSchema = mongoose.Schema({
             required: false,
         }
     ],
-    played:{
+    played: {
         type: Boolean,
         required: true,
     },
-    team1:{
+    team1: {
         type: String,
         required: true,
     },
-    team2:{
+    team2: {
         type: String,
         required: true,
     },
@@ -57,9 +52,15 @@ const macthSchema = mongoose.Schema({
                 goalId: { type: String }
             }
         ]
-    }
-},matchOptions);
+    },
+    winner: {
+        teamid: {
+            type: String,
+            required: false,
+        }
+    },
+});
 
-const Match = mongoose.model('MatchBase',macthSchema);
+const easyMatch = match.discriminator('easyMatchModel', easyMatchSchema);
 
-module.exports = mongoose.model('Match',macthSchema);
+module.exports = mongoose.model('easyMatch', easyMatchSchema);

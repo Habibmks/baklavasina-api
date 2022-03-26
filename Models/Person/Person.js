@@ -31,7 +31,11 @@ const personSchema = mongoose.Schema({
     date: {
         type: Date,
         default: Date.now
-    }
+    },
+    adress: {
+        type: String,
+        required: false,
+    },
 }, personOptions)
 
 const Person = mongoose.model('PersonBase', personSchema);
