@@ -3,7 +3,7 @@ const router = express.Router();
 
 const crypt = require('bcrypt');
 const v = require('../../Functions/Validations.js');
-const PlayerModel = require('../../Models/Person/player')
+const PlayerModel = require('../../Models/Person/Player.js');
 
 router.get('/all', async (req, res) => {
     const players = await PlayerModel.find();
