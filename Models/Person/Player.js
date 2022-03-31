@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const person = require("./person.js");
+const person = require("../person.js");
 
 const playerSchema = mongoose.Schema({
     type: {
