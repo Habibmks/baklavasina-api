@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const person = require("./person");
+const person = require("./Person");
 
 const refereeSchema = mongoose.Schema({
     type: {
