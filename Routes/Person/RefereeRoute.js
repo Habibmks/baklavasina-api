@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const crypt = require('bcrypt');
-const RefereeModel = require('../../Models/Person/referee.js');
+const RefereeModel = require('../../Models/Person/Referee.js');
 const v = require('../../Functions/Validations.js');
 
 router.get('/all', async (req, res) => {
