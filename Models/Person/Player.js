@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
-const person = require("./Person.js");
+const person = require("./person.js");
 
 const playerSchema = mongoose.Schema({
+    type: {
+        player: Boolean,
+        referee: Boolean,
+        observer: Boolean,
+    },
     name: {
         type: String,
         required: true

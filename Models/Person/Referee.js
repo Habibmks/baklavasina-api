@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 const person = require("./person");
 
 const refereeSchema = mongoose.Schema({
+    type: {
+        player: Boolean,
+        referee: Boolean,
+        observer: Boolean,
+    },
     name: {
         type: String,
         required: true
@@ -41,15 +46,15 @@ const refereeSchema = mongoose.Schema({
     },
     comments: [
         {
-            commentId: {type: String,required: true},
-            personId: { type: String, required: true},
-            comment: {type: String, required: true},
+            commentId: { type: String, required: true },
+            personId: { type: String, required: true },
+            comment: { type: String, required: true },
             required: false,
         }
     ],
     matches: [
         {
-            matchId: {type: String, required: true},
+            matchId: { type: String, required: true },
             required: false,
         }
     ],
@@ -61,4 +66,4 @@ const refereeSchema = mongoose.Schema({
 
 const Referee = person.discriminator('RefereeModel', refereeSchema);
 
-module.exports = mongoose.model("Referee",refereeSchema);
+module.exports = mongoose.model("Referee", refereeSchema);

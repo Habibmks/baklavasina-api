@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const person = require('./Person');
 
 const observerSchema = mongoose.Schema({
+    type: {
+        player: Boolean,
+        referee: Boolean,
+        observer: Boolean,
+    },
     name: {
         type: String,
         required: true
