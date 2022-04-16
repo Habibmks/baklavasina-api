@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const crypt = require('bcrypt');
 const RefereeModel = require('../../Models/Person/Referee.js');
+const PlayerModel = require('../../Models/Person/Player.js');
 const v = require('../../Functions/Validations.js');
 
 router.get('/all', async (req, res) => {
@@ -17,8 +18,26 @@ router.post('/register', async (req, res) => {
     var email = req.body.email;
     var password = req.body.password;
     var type = {
-        referee:true,
+        referee: true,
     };
+    var player = PlayerModel.findOne({ email: email, });
+    if (player) {
+        var json = {
+            type: player.type,
+            name: player.name,
+            surname: player.surname,
+            email: player.surname,
+            password: player.password,
+            token: player.token,
+            date: player.date,
+            uniformNo: player.uniformNo,
+            contrats: player.contrats,
+            team: player.team,
+            transfers: player.transfers,
+            pPower: player.pPower,
+            address: player.address,
+        }
+    }
     if (v.registerValidation(name, surname, email, password) == null) {
         const salt = await crypt.genSalt(10);
         const saltedpass = await crypt.hash(req.body.password.toString(), salt);
@@ -54,16 +73,16 @@ router.post('/login', async (req, res) => {
         error: "Email is not valid",
     });
     var referee = await RefereeModel.findOne({ email: req.body.email });
-    
+
     if (!referee) return res.status(404).json({ error: "There is no user " + req.body.email });
 
     if (!(await crypt.compare(req.body.password, referee.password))) return res.status(401).json({ error: "wrong password" });
-    if(referee.type.referee != true){
+    if (referee.type.referee != true) {
         return res.json({
             error: "User is not referee",
         });
     };
-    
+
     return res.status(201).json({
         email: referee.email,
         id: referee._id,
@@ -102,7 +121,7 @@ router.put('/update/:id', async (req, res) => {
     if (!referee) return res.status(404).json({
         error: "There is no user " + id
     });
-    
+
     if (!(await crypt.compare(req.body.password, referee.password))) return res.status(401).json({ error: "wrong password" });
 
     const salt = await crypt.genSalt(10);
