@@ -17,19 +17,17 @@ const refereeRoute = require('./Routes/Person/RefereeRoute.js');
 app.use('/person/referee',refereeRoute);
 app.use('/person/player',playerRoute);
 
+
+mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectTimeoutMS=1000").then(() => {
+    console.log('connected succesfully')
+}).catch(e => console.log(e));
+
 /*
-mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectTimeoutMS=1000", { useNewUrlParser: true }, (err) => {
+mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectionTimeoutMS=2000", { useNewUrlParser: true }, (err) => {
     if (err) return console.log(err.message);
 
     console.log('connected succesfully');
 });
 */
-
-mongoose.connect("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.3.1", { useNewUrlParser: true }, (err) => {
-    if (err) return console.log(err.message);
-
-    console.log('connected succesfully');
-});
-
 
 app.listen(3000, () => console.log('listening on port 3000'));
