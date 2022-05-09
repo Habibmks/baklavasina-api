@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const matchOptions = {
     discriminatorKey: 'matchtype',
-    collection: 'people',
+    collection: 'match',
 }
 
 const macthSchema = mongoose.Schema({
@@ -57,7 +57,13 @@ const macthSchema = mongoose.Schema({
                 goalId: { type: String }
             }
         ]
-    }
+    },
+    winner: {
+        teamid: {
+            type: String,
+            required: false,
+        }
+    },
 },matchOptions);
 
 const Match = mongoose.model('MatchBase',macthSchema);

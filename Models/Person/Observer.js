@@ -32,7 +32,7 @@ const observerSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    rating: {
+    observerRating: {
         totalScore: {
             type: Number, required: false
         },
@@ -44,7 +44,7 @@ const observerSchema = mongoose.Schema({
             },
         ]
     },
-    comments: [
+    observerComments: [
         {
             commentId: {type: String,required: true},
             personId: { type: String, required: true},
@@ -52,7 +52,7 @@ const observerSchema = mongoose.Schema({
             required: false,
         }
     ],
-    matches: [
+    observerMatches: [
         {
             matchId: {type: String, required: true},
             required: false,

@@ -32,7 +32,7 @@ const refereeSchema = mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    rating: {
+    refereeRating: {
         totalScore: {
             type: Number, required: false
         },
@@ -44,7 +44,7 @@ const refereeSchema = mongoose.Schema({
             },
         ]
     },
-    comments: [
+    refereeComments: [
         {
             commentId: { type: String, required: true },
             personId: { type: String, required: true },
@@ -52,7 +52,7 @@ const refereeSchema = mongoose.Schema({
             required: false,
         }
     ],
-    matches: [
+    refereeMatches: [
         {
             matchId: { type: String, required: true },
             required: false,

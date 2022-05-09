@@ -5,7 +5,7 @@ const easyMatchSchema = mongoose.Schema({
     //Maç başlama tarihi saati
     startDate: {
         type: Date,
-        required: true,
+        required: false,
     },
     //Halısaha
     field: {
@@ -35,6 +35,7 @@ const easyMatchSchema = mongoose.Schema({
         count: {
             type: Number,
             required: true,
+            default: 0
         },
         goals: [
             {
@@ -46,6 +47,7 @@ const easyMatchSchema = mongoose.Schema({
         count: {
             type: Number,
             required: true,
+            default: 0
         },
         goals: [
             {

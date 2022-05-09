@@ -7,10 +7,10 @@ const teamSchema = mongoose.Schema({
     },
     statistics: {
         type: String,
-        required: true,
+        required: false,
     },
     captain: {
-        type: String,
+        type: mongoose.ObjectId,
         required: true,
     },
     contract: [
@@ -28,11 +28,7 @@ const teamSchema = mongoose.Schema({
         }
     ],
     players: [
-        {
-            player: {
-                type: String,
-            }
-        }
+        { player: mongoose.ObjectId }
     ],
     teamPower: {
         type: String,
@@ -45,8 +41,17 @@ const teamSchema = mongoose.Schema({
             }
         }
     ],
+    invites: [
+        {
+            sender: mongoose.ObjectId,
+            field: String,
+            observer: String,
+            referee: String,
+            type: String
+        }
+    ],
 });
 
 const Team = mongoose.model('Team', teamSchema);
 
-module.exports = Team;
+module.exports = mongoose.model('Team', teamSchema);

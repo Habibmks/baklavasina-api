@@ -2,13 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 const crypt = require('bcrypt');
-const RefereeModel = require('../../Models/Person/Referee.js');
-const PlayerModel = require('../../Models/Person/Player.js');
+const personModel = require('../../Models/Person/Person.js');
 const v = require('../../Functions/Validations.js');
 
 router.get('/all', async (req, res) => {
-    const referees = await RefereeModel.find();
-    return res.status(200).send(referees).end();
+    const people = await personModel.find();
+    return res.status(200).send(people).end();
 });
 
 router.post('/register', async (req, res) => {
@@ -20,35 +19,22 @@ router.post('/register', async (req, res) => {
     var type = {
         referee: true,
     };
-    var player = PlayerModel.findOne({ email: email, });
-    if (player) {
-        var json = {
-            type: player.type,
-            name: player.name,
-            surname: player.surname,
-            email: player.surname,
-            password: player.password,
-            token: player.token,
-            date: player.date,
-            uniformNo: player.uniformNo,
-            contrats: player.contrats,
-            team: player.team,
-            transfers: player.transfers,
-            pPower: player.pPower,
-            address: player.address,
-        }
-    }
+
+    /*var person = await personModel.findOne({ email: email });
+    if(person){
+        res.status(409).json({ error: "Already registered", }).end();
+    }*/
     if (v.registerValidation(name, surname, email, password) == null) {
         const salt = await crypt.genSalt(10);
         const saltedpass = await crypt.hash(req.body.password.toString(), salt);
-        const referee = new RefereeModel({
+        const newperson = new personModel({
             name: req.body.name,
             surname: req.body.surname,
             email: req.body.email,
             password: saltedpass,
             type: type,
         });
-        referee.save(function (error, resp) {
+        newperson.save(function (error, resp) {
             if (error) {
                 return res.send(error);
             } else {
@@ -72,22 +58,22 @@ router.post('/login', async (req, res) => {
     if (!v.emailValidation(email)) return res.json({
         error: "Email is not valid",
     });
-    var referee = await RefereeModel.findOne({ email: req.body.email });
+    var person = await personModel.findOne({ email: email });
 
-    if (!referee) return res.status(404).json({ error: "There is no user " + req.body.email });
+    if (!person) return res.status(404).json({ error: "There is no user " + email });
 
-    if (!(await crypt.compare(req.body.password, referee.password))) return res.status(401).json({ error: "wrong password" });
-    if (referee.type.referee != true) {
+    if (!(await crypt.compare(req.body.password, person.password))) return res.status(401).json({ error: "wrong password" });
+    if (person.type.referee != true) {
         return res.json({
             error: "User is not referee",
         });
     };
 
     return res.status(201).json({
-        email: referee.email,
-        id: referee._id,
-        name: referee.name,
-        surname: referee.surname
+        email: person.email,
+        id: person._id,
+        name: person.name,
+        surname: person.surname
     });
 });
 
@@ -96,19 +82,19 @@ router.get('/get/:id', async (req, res) => {
     if (id.length != 24) return res.json({
         error: "Invalid id",
     });
-    const referee = await RefereeModel.findById(id);
-    if (!referee) return res.status(404).json({
+    const person = await personModel.findById(id);
+    if (!person) return res.status(404).json({
         error: "There is no user with " + id,
     });
     return res.json({
-        name: referee.name,
-        surname: referee.surname,
-        email: referee.email,
-        registerDate: referee.date,
-        rating: referee.rating,
-        comments: referee.comments,
-        matches: referee.matches,
-        adress: referee.adress,
+        name: person.name,
+        surname: person.surname,
+        email: person.email,
+        registerDate: person.date,
+        refereeRating: person.refereeRating,
+        refereeComments: person.refereeComments,
+        refereeMatches: person.refereeMatches,
+        adress: person.adress,
     });
 });
 
@@ -117,22 +103,22 @@ router.put('/update/:id', async (req, res) => {
     if (id.length != 24) return res.json({
         error: "Invalid id",
     });
-    const referee = req.body.RefereeModel;
-    if (!referee) return res.status(404).json({
+    const person = req.body.personModel;
+    if (!person) return res.status(404).json({
         error: "There is no user " + id
     });
 
-    if (!(await crypt.compare(req.body.password, referee.password))) return res.status(401).json({ error: "wrong password" });
+    if (!(await crypt.compare(req.body.password, person.password))) return res.status(401).json({ error: "wrong password" });
 
     const salt = await crypt.genSalt(10);
     const saltedpass = await crypt.hash(req.body.password.toString(), salt);
 
-    await RefereeModel.findByIdAndUpdate(id, {
+    await personModel.findByIdAndUpdate(id, {
         name: req.body.name,
         surname: req.body.surname,
         password: saltedpass,
     });
-    return res.send(await RefereeModel.findById(id));
+    return res.send(await personModel.findById(id));
 });
 
 router.delete('/delete/:id', (req, res) => {
@@ -140,11 +126,11 @@ router.delete('/delete/:id', (req, res) => {
     if (id.length != 24) return res.json({
         error: "Invalid id",
     });
-    RefereeModel.findByIdAndDelete(id).then((referee) => {
-        if (!referee) {
+    personModel.findByIdAndDelete(id).then((person) => {
+        if (!person) {
             return res.status(404).send("There is no user" + id).end();
         }
-        return res.status(200).json({ referee, message: "User deleted succesfully" });
+        return res.status(200).json({ person, message: "User deleted succesfully" });
     }).catch((error) => {
         return res.status(400).send(error).end();
     });

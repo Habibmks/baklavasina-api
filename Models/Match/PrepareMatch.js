@@ -5,7 +5,7 @@ const prepareMatchSchema = mongoose.Schema({
     //Maç başlama tarihi saati
     startDate: {
         type: Date,
-        required: true,
+        required: false,
     },
     //Halısaha
     field: {

@@ -12,15 +12,26 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const playerRoute = require('./Routes/Person/PlayerRoute.js');
-const refereeRoute = require('./Routes/Person/RefereeRoute.js');
-app.use('/person/referee',refereeRoute);
-app.use('/person/player',playerRoute);
+// const playerRoute = require('./Routes/Person/PlayerRoute.js');
+// const refereeRoute = require('./Routes/Person/RefereeRoute.js');
+const personRoute = require('./Routes/Person/PersonRoute.js');
+const teamRoute = require('./Routes/Team/Team.js');
+const matchRoute = require('./Routes/Match/Match.js');
+
+// app.use('/person/referee',refereeRoute);
+// app.use('/person/player',playerRoute);
+app.use('/person',personRoute);
+app.use('/team',teamRoute);
+app.use('/match',matchRoute);
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectTimeoutMS=1000").then(() => {
     console.log('connected succesfully')
 }).catch(e => console.log(e));
+
+app.get('/', (req,res) => {
+    res.send('abc');
+});
 
 /*
 mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectionTimeoutMS=2000", { useNewUrlParser: true }, (err) => {

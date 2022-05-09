@@ -21,4 +21,4 @@ const transferSchema = mongoose.Schema({
 
 const Transfer = mongoose.model('Transfer',transferSchema);
 
-module.exports = Transfer;
+module.exports = mongoose.model('Transfer',transferSchema);
