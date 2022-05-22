@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const p = require('../../Functions/Person.js');
+const p = require('../Functions/Person.js');
 
 router.get('/all', p.getAll);
 

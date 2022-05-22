@@ -28,12 +28,12 @@ const adressSchema = mongoose.Schema({
     //enlem
     latitude:{
         type: String,
-        required: true,
+        required: false,
     },
     //boylam
     longitude:{
         type: String,
-        required: true,
+        required: false,
     },
 });
 

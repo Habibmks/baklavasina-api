@@ -14,7 +14,7 @@ const getAll = async (req, res) => {
 
 const login = async (req, res) => {
     email = req.body.email;
-    password = req.body.email;
+    password = req.body.password;
     if (!v.emailValidation(email)) return res.json({ error: "Email is not valid" });
 
     var person = await personModel.findOne({ email: req.body.email });
@@ -40,6 +40,7 @@ const register = async (req, res) => {
     var type = {
         player: true,
     };
+    var gender = req.body.gender;
     var favTeam = req.body.favTeam;
     var position = req.body.position;
     // var person = personModel.findOne({ email: email});
@@ -61,6 +62,7 @@ const register = async (req, res) => {
             type: type,
             favTeam: favTeam,
             position: position,
+            gender: gender,
         });
         newperson.save(function (error, resp) {
             if (error) {
@@ -101,9 +103,9 @@ const getPerson = async (req, res) => {
 }
 
 const teamRequest = async (req, res) => {
-    const { teamId, id, uniformNo, position, } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(teamId)) return res.status(404).send('invalid user or team id: ${id}');
-    const person = await personModel.findById(id);
+    const { teamId, personId, uniformNo, position, } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(personId) || !mongoose.Types.ObjectId.isValid(teamId)) return res.status(404).send('invalid user or team id: ${id}');
+    const person = await personModel.findById(personId);
     invite = { teamId: teamId, uniformNo: uniformNo, position: position };
     person.inviteTeam.push(invite);
     person.save();

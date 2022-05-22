@@ -24,15 +24,15 @@ const macthSchema = mongoose.Schema({
             required: false,
         }
     ],
-    played:{
+    played: {
         type: Boolean,
         required: true,
     },
-    team1:{
+    team1: {
         type: String,
         required: true,
     },
-    team2:{
+    team2: {
         type: String,
         required: true,
     },
@@ -64,8 +64,9 @@ const macthSchema = mongoose.Schema({
             required: false,
         }
     },
-},matchOptions);
+    state: String,
+}, matchOptions);
 
-const Match = mongoose.model('MatchBase',macthSchema);
+const Match = mongoose.model('MatchBase', macthSchema);
 
-module.exports = mongoose.model('Match',macthSchema);
+module.exports = mongoose.model('Match', macthSchema);

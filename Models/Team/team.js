@@ -41,6 +41,9 @@ const teamSchema = mongoose.Schema({
             }
         }
     ],
+    leagues: [
+        { league: mongoose.ObjectId },
+    ],
     invites: [
         {
             sender: mongoose.ObjectId,
@@ -50,6 +53,13 @@ const teamSchema = mongoose.Schema({
             type: String
         }
     ],
+    tournaments: [
+        { tournament: mongoose.ObjectId },
+    ],
+    leagues: [
+        { league: mongoose.ObjectId },
+    ],
+    gender: Boolean,
 });
 
 const Team = mongoose.model('Team', teamSchema);

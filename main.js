@@ -14,9 +14,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // const playerRoute = require('./Routes/Person/PlayerRoute.js');
 // const refereeRoute = require('./Routes/Person/RefereeRoute.js');
-const personRoute = require('./Routes/Person/PersonRoute.js');
-const teamRoute = require('./Routes/Team/Team.js');
-const matchRoute = require('./Routes/Match/Match.js');
+const personRoute = require('./Routes/PersonRoute.js');
+const teamRoute = require('./Routes/Team.js');
+const matchRoute = require('./Routes/Match.js');
 
 // app.use('/person/referee',refereeRoute);
 // app.use('/person/player',playerRoute);
