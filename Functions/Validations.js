@@ -4,19 +4,12 @@ const res = require('express/lib/response');
 
 const personModel = require("../Models/Person/Person");
 
-function registerValidation(name, surname, email, password) {
+function registerValidation(name, surname) {
     if (!name) return "Name can not be null";
     else if (!surname) return "Surname can not be null";
-    else if (!email) return "Email can not be null";
-    else if (!password) return "Password can not be null";
-    if (!validator.validate(email)) return "Email is not valid";
-    if (password.length <= 8) return "Password must be longer than 8 characters";
     return null;
 }
 
-function emailValidation(email) {
-    return validator.validate(email);
-}
 
 // export const login = (req,res) => {
     
@@ -29,5 +22,5 @@ function emailValidation(email) {
 //     if(!person) return 
 // }
 
-module.exports = { registerValidation, emailValidation };
+module.exports = { registerValidation };
 

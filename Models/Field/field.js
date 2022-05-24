@@ -5,43 +5,17 @@ const fieldSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    //Adress id
-    adress: {
-        country:{
-            type: String,
-            required: true,
-        },
-        city:{
-            type: String,
-            required: true,
-        },
-        council:{
-            type: String,
-            required: true,
-        },
-        neighborhood:{
-            type: String,
-            required: true,
-        },
-        street:{
-            type: String,
-            required: true,
-        },
-        no:{
-            type: String,
-            required: true,
-        },
-        //enlem
-        latitude:{
-            type: String,
-            required: false,
-        },
-        //boylam
-        longitude:{
-            type: String,
-            required: false,
-        },
-    },
+
+    country: String,
+    city: String,
+    council: String,
+    neighborhood: String,
+    street: String,
+    no: String,
+    //enlem
+    latitude: String,
+    //boylam
+    longitude: String,
     phoneNumber: {
         type: Number,
         required: true,

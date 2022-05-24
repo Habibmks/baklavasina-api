@@ -17,12 +17,14 @@ app.use(express.urlencoded({ extended: false }));
 const personRoute = require('./Routes/PersonRoute.js');
 const teamRoute = require('./Routes/Team.js');
 const matchRoute = require('./Routes/Match.js');
+const fieldRoute = require('./Routes/Field.js');
 
 // app.use('/person/referee',refereeRoute);
 // app.use('/person/player',playerRoute);
 app.use('/person',personRoute);
 app.use('/team',teamRoute);
 app.use('/match',matchRoute);
+app.use('/field',fieldRoute);
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectTimeoutMS=1000").then(() => {

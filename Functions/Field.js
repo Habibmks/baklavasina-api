@@ -19,7 +19,12 @@ const create = async (req, res) => {
     });
     const field = new fieldModel({
         name: name,
-        address: address,
+        country: country,
+        city: city,
+        council: council,
+        neighborhood: neighborhood,
+        street: street,
+        no: no,
         phoneNumber: phoneNumber,
     })
     await field.save();
@@ -27,6 +32,9 @@ const create = async (req, res) => {
 }
 
 const fieldByCity = async (req, res) => {
-    const { city } = req.params;
-    const fields = await fieldModel.find({ results: { $elemMatch: { adress: city } } });
+    const { state } = req.params;
+    const fields = await fieldModel.find({ city: state });
+    return res.send(fields);
 }
+
+module.exports = {create,getAll,fieldByCity};

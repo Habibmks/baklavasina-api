@@ -3,10 +3,13 @@ const prepareMatchModel = require('../Models/Match/PrepareMatch');
 const easyMatchModel = require('../Models/Match/easyMatch');
 const leagueMatchModel = require('../Models/Match/leagueMatch');
 const tournamentMatchModel = require('../Models/Match/tournamentMatch');
+const goalModel=require('../Models/goal.js');
+const cardModel=require('../Models/card.js');
 
 const v = require('./Validations.js');
 const res = require('express/lib/response');
 const { default: mongoose } = require('mongoose');
+const { restart } = require('nodemon');
 
 const getAll = async (req, res) => {
     const matches = await matchModel.find();
@@ -105,7 +108,33 @@ async function createTournament(home, guest, field, referee, observer) {
 
 const findByState = async (req, res) => {
     const { state } = req.params;
-    return (await res.send(await matchModel.find({ results: { $elemMatch: { state: state } } })));
+    return (await res.send(await matchModel.find({ state: state})));
+}
+
+const addGoal=async(req,res)=>{
+    const {teamId,personId,matchId,minute,penalty}=req.body;
+    const goal=new goalModel({
+        team:teamId,
+        penalty:penalty,
+        minute:minute,
+        match:matchId,
+        player:personId,
+    });
+    match.save();
+    return res.status(200).send(goal);
+}
+
+const addCard=async(req,res)=>{
+    const {color,match,player,penalty,team}=req.body;
+    const card=new cardModel({
+        color:color,
+        match:match,
+        player:player,
+        penalty:penalty,
+        team:team,
+    });
+    card.save();
+    return res.status(200).send(card);
 }
 
 module.exports = { getAll, createEasy, createPrepare, createLeague, createTournament, getMatch, findByState };

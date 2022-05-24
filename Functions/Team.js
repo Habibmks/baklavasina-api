@@ -23,11 +23,13 @@ const getTeam = async (req, res) => {
 
 const createTeam = async (req, res) => {
     const { personId, teamName } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(personId))
-        return res.status(404).send('invalid user id: ${id}');
+    // if (!mongoose.Types.ObjectId.isValid(personId))
+    //     return res.status(404).send('invalid user id: ${id}');
+    const person = await personModel.findOne({ id: personId });
     const newTeam = new teamModel({
         captain: personId,
         name: teamName,
+        gender: person.gender,
     });
     newTeam.players.push(personId);
     newTeam.save(function (error, resp) {
@@ -64,6 +66,7 @@ const acceptInvite = async (req, res) => {
     const { teamId, inviteId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(teamId) || !mongoose.Types.ObjectId.isValid(inviteId)) return res.status(404).send('invalid invite or team id: ${id}');
     const team = await teamModel.findById(teamId);
+    console.log(req.body);  
     const invite = team.invites.find(invite => invite._id == inviteId);
     type = invite.type;
     switch (type) {
@@ -100,7 +103,7 @@ const rejectInvite = async (req, res) => {
 
 const findByGender = async (req, res) => {
     const { gender } = req.params;
-    return (await res.send(await teamModel.find({ results: { $elemMatch: { gender: gender } } })));
+    return (await res.send(await teamModel.find({ gender: gender })));
 }
 
 const findByName = async (req, res) => {

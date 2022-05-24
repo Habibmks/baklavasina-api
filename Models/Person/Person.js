@@ -6,6 +6,7 @@ const personOptions = {
 }
 
 const personSchema = mongoose.Schema({
+    id: String,
     type: {
         player: Boolean,
         referee: Boolean,
@@ -23,10 +24,10 @@ const personSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
+    // password: {
+    //     type: String,
+    //     required: true
+    // },
     token: [
         {
             type: String

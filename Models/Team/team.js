@@ -10,7 +10,7 @@ const teamSchema = mongoose.Schema({
         required: false,
     },
     captain: {
-        type: mongoose.ObjectId,
+        type: String,
         required: true,
     },
     contract: [
@@ -28,7 +28,7 @@ const teamSchema = mongoose.Schema({
         }
     ],
     players: [
-        { player: mongoose.ObjectId }
+        { type: String }
     ],
     teamPower: {
         type: String,
@@ -46,7 +46,7 @@ const teamSchema = mongoose.Schema({
     ],
     invites: [
         {
-            sender: mongoose.ObjectId,
+            sender: String,
             field: String,
             observer: String,
             referee: String,

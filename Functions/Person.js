@@ -36,10 +36,12 @@ const register = async (req, res) => {
     var name = req.body.name;
     var surname = req.body.surname;
     var email = req.body.email;
-    var password = req.body.password;
+    // var password = req.body.password;
+    var id = req.body.id;
     var type = {
         player: true,
     };
+    //true = male, false = female
     var gender = req.body.gender;
     var favTeam = req.body.favTeam;
     var position = req.body.position;
@@ -51,14 +53,16 @@ const register = async (req, res) => {
     //     city: req.body.city,
     //     state: req.body.state,
     // }
-    if (v.registerValidation(name, surname, email, password) == null) {
-        const salt = await crypt.genSalt(10);
-        const saltedpass = await crypt.hash(req.body.password.toString(), salt);
+    console.log(req.body);
+    if (v.registerValidation(name, surname) == null) {
+        // const salt = await crypt.genSalt(10);
+        // const saltedpass = await crypt.hash(req.body.password.toString(), salt);
         const newperson = new personModel({
             name: name,
             surname: surname,
             email: email,
-            password: saltedpass,
+            // password: saltedpass,
+            id: id,
             type: type,
             favTeam: favTeam,
             position: position,
@@ -70,42 +74,42 @@ const register = async (req, res) => {
             } else {
                 return res.status(200).json({
                     name: name,
-                    id: newperson._id,
+                    id: newperson.id,
                     surname: surname,
                     email: email
                 });
             }
         });
     } else {
-        var e = await v.registerValidation(name, surname, email, password);
+        var e = await v.registerValidation(name, surname);
         return res.json({ error: e });
     }
 }
 
 const update = async (req, res) => {
-    const { name, surname, email, password, id, birthday, telNo, favTeam, } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
-    const person = await personModel.findById(id);
-    const saltedPass = await crypt.hash(password.toString(), await crypt.genSalt(10));
+    const { name, surname, email, id, birthday, telNo, favTeam, } = req.body;
+    //if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
+    const person = await personModel.find({ id: id });
+    //const saltedPass = await crypt.hash(password.toString(), await crypt.genSalt(10));
 
-    await personModel.findByIdAndUpdate(id, {
-        name: name, surnam: surname, email: email, password: saltedPass,
+    await personModel.findOneAndUpdate({ id: id }, {
+        name: name, surnam: surname, email: email,
         birthday: birthday, telNo: telNo, favTeam: favTeam,
     });
-    res.status(200).send(await personModel.findById(id));
+    res.status(200).send(await personModel.find({id:id}));
 
 }
 
 const getPerson = async (req, res) => {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
-    res.status(200).send(await personModel.findById(id));
+    //if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
+    res.status(200).send(await personModel.find({ id: id }));
 }
 
 const teamRequest = async (req, res) => {
     const { teamId, personId, uniformNo, position, } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(personId) || !mongoose.Types.ObjectId.isValid(teamId)) return res.status(404).send('invalid user or team id: ${id}');
-    const person = await personModel.findById(personId);
+    if (!mongoose.Types.ObjectId.isValid(teamId)) return res.status(404).send('invalid user or team id: ${id}');
+    const person = await personModel.findOne({id:personId});
     invite = { teamId: teamId, uniformNo: uniformNo, position: position };
     person.inviteTeam.push(invite);
     person.save();
@@ -114,16 +118,18 @@ const teamRequest = async (req, res) => {
 
 const invites = async (req, res) => {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
-    const person = await personModel.findById(id);
+    //if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
+    const person = await personModel.find({id:id});
     if (!person) res.status(404).json({ error: "There is no user;" }).end();
     res.status(200).send(person.inviteTeam);
 }
 
 const acceptInvite = async (req, res) => {
     const { id, inviteId } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(inviteId)) return res.status(404).send('invalid user or team id: ${id}');
-    const person = await personModel.findById(id);
+    if (!mongoose.Types.ObjectId.isValid(inviteId)) return res.status(404).send('invalid user or team id: ${id}');
+    const person = await personModel.find({id:id});
+    console.log(req.body);
+    console.log(person);
     const invite = person.inviteTeam.find(invite => invite._id == inviteId);
     //addPlayer()
     await addPlayer(person, invite.teamId);
@@ -168,7 +174,7 @@ const newTransfer = async (person, teamId) => {
 
 const rejectInvite = async (req, res) => {
     const { id, inviteId } = req.body;
-    if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(inviteId))
+    if (!mongoose.Types.ObjectId.isValid(inviteId))
         return res.status(404).send('invalid user or team id: ${id}');
     await personModel.updateMany({}, {
         $pull: {
@@ -177,7 +183,7 @@ const rejectInvite = async (req, res) => {
             }
         }
     });
-    const invites = (await personModel.findById(id)).inviteTeam;
+    const invites = (await personModel.findOne({id:id})).inviteTeam;
     res.status(200).send(invites);
 }
 
