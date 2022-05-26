@@ -32,8 +32,8 @@ const create = async (req, res) => {
 }
 
 const fieldByCity = async (req, res) => {
-    const { state } = req.params;
-    const fields = await fieldModel.find({ city: state });
+    const { city } = req.params;
+    const fields = await fieldModel.find({ city: city });
     return res.send(fields);
 }
 

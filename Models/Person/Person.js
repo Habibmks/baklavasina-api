@@ -132,6 +132,7 @@ const personSchema = mongoose.Schema({
         }
     ],
     gender: Boolean,
+    picture: String,
 }, personOptions)
 
 const Person = mongoose.model('PersonBase', personSchema);
