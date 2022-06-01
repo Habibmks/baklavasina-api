@@ -1,38 +1,45 @@
 const mongoose = require('mongoose');
 const http = require('http');
 const express = require('express');
-
-
-const { get } = require('express/lib/response');
-const env = require('dotenv/config');
-const jwt = require('jsonwebtoken');
-
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+var allowedOrigins = [
+    'http://localhost:8200',
+    'http://127.1.1.1:8200'
+];
+app.use(cors({
+    origin: function (origin, callback) {    // allow requests with no origin 
+        // (like mobile apps or curl requests)
+        if (!origin) return callback(null, true); if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        } return callback(null, true);
+    }
+}));
 
-// const playerRoute = require('./Routes/Person/PlayerRoute.js');
-// const refereeRoute = require('./Routes/Person/RefereeRoute.js');
 const personRoute = require('./Routes/PersonRoute.js');
 const teamRoute = require('./Routes/Team.js');
 const matchRoute = require('./Routes/Match.js');
 const fieldRoute = require('./Routes/Field.js');
+const tournamentRoute = require('./Routes/Tournament.js');
 
-// app.use('/person/referee',refereeRoute);
-// app.use('/person/player',playerRoute);
-app.use('/person',personRoute);
-app.use('/team',teamRoute);
-app.use('/match',matchRoute);
-app.use('/field',fieldRoute);
+app.use('/person', personRoute);
+app.use('/team', teamRoute);
+app.use('/match', matchRoute);
+app.use('/field', fieldRoute);
+app.use('/tournament', tournamentRoute);
 
 
 mongoose.connect("mongodb://127.0.0.1:27017/localhost?connectTimeoutMS=1000").then(() => {
     console.log('connected succesfully')
 }).catch(e => console.log(e));
 
-app.get('/', (req,res) => {
-    res.send('abc');
+app.get('/', (req, res) => {
+    res.send('You did it!!! Welcome :)');
 });
 
 /*

@@ -30,8 +30,12 @@ const createTeam = async (req, res) => {
         captain: personId,
         name: teamName,
         gender: person.gender,
+        address: person.adress,
     });
-    newTeam.players.push(personId);
+    person.team = newTeam._id;
+    person.captain = true;
+    await person.save();
+    newTeam.players.push(personId.toString());
     newTeam.save(function (error, resp) {
         if (error)
             return res.send(error);
@@ -39,14 +43,25 @@ const createTeam = async (req, res) => {
             return res.status(200).send(newTeam);
         }
     });
+    // teamModel.updateMany({ _id: newTeam._id }, {
+    //     $push: { players: personId }
+    // });
     return;
 }
 
 const matchRequest = async (req, res) => {
-    const { homeId, guestId, type, saha } = req.body;
+    const { homeId, guestId, type, saha, city, state } = req.body;
     switch (type) {
         case "easy":
-            return res.send((await inviteEasy(homeId, guestId, saha)));
+            return res.send((
+                await inviteEasy(
+                    homeId,
+                    guestId,
+                    saha,
+                    city,
+                    state,
+                )
+            ));
             break;
         case "league":
             return res.send((await inviteLeague(homeId, guestId, saha, req.body.referee, req.body.observer)));
@@ -66,21 +81,75 @@ const acceptInvite = async (req, res) => {
     const { teamId, inviteId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(teamId) || !mongoose.Types.ObjectId.isValid(inviteId)) return res.status(404).send('invalid invite or team id: ${id}');
     const team = await teamModel.findById(teamId);
-    console.log(req.body);  
+    console.log(req.body);
     const invite = team.invites.find(invite => invite._id == inviteId);
+    console.log({ invite: invite });
     type = invite.type;
+    const homePlayers = (await teamModel.findById(invite.sender)).players;
+    const guestPlayers = (await teamModel.findById(teamId)).players;
     switch (type) {
         case "easy":
-            return res.send((await m.createEasy(invite.sender, invite.teamId, invite.field)));
+            return res.send((
+                await m.createEasy(
+                    invite.sender,
+                    teamId,
+                    invite.field,
+                    inviteId,
+                    homePlayers,
+                    guestPlayers,
+                    invite.city,
+                    invite.state
+                )
+            ));
             break;
         case "league":
-            return res.send((await m.createLeague(invite.sender, teamId, invite.field, invite.referee, invite.observer)));
+            return res.send((
+                await m.createLeague(
+                    invite.sender,
+                    teamId,
+                    invite.field,
+                    invite.referee,
+                    invite.observer,
+                    inviteId,
+                    homePlayers,
+                    guestPlayers,
+                    invite.city,
+                    invite.state,
+                    leagueId,
+                )
+            ));
             break;
         case "prepare":
-            return res.send((await m.createPrepare(invite.sender, teamId, invite.observer, invite.field)));
+            return res.send((
+                await m.createPrepare(
+                    invite.sender,
+                    teamId,
+                    invite.observer,
+                    invite.field,
+                    inviteId,
+                    homePlayers,
+                    guestPlayers,
+                    invite.city,
+                    invite.state,
+                )
+            ));
             break;
         case "tournament":
-            return res.send((await m.createTournament(invite.sender, teamId, invite.field, invite.referee, invite.observer)));
+            return res.send((
+                await m.createTournament(
+                    invite.sender,
+                    teamId,
+                    invite.field,
+                    invite.referee,
+                    invite.observer,
+                    inviteId,
+                    homePlayers,
+                    guestPlayers,
+                    invite.city,
+                    invite.state,
+                    tournamentId
+                )
+            ));
             break;
         default:
             break;
@@ -108,13 +177,20 @@ const findByGender = async (req, res) => {
 
 const findByName = async (req, res) => {
     const { name } = req.params;
-    return (await res.send(await teamModel.find({ result: { $regex: '.*' + name + '.*' } })));
+    return (await res.send(await teamModel.find({ name: { $regex: '.*' + name + '.*', $options: 'i' } })));
+}
+
+const findByCity = async (req, res) => {
+    const { city } = req.params;
+    return (await res.send(await teamModel.find({ city: { $regex: '.*' + city + '.*', $options: 'i' } })));
 }
 
 const findByState = async (req, res) => {
     const { state } = req.params;
-    return (await res.send(await teamModel.find({ result: { $regex: '.*' + state + '.*' } })));
+    return (await res.send(await teamModel.find({ city: { $regex: '.*' + state + '.*', $options: 'i' } })));
 }
+
+
 
 module.exports = {
     getAll,
@@ -125,21 +201,29 @@ module.exports = {
     getTeam,
     findByGender,
     findByName,
+    findByCity,
     findByState,
 };
 
-async function inviteEasy(home, guest, field) {
+async function inviteEasy(home, guest, field, city, state) {
     var team2 = await teamModel.findById(guest);
-    var invite = { sender: home, field: field, type: easy };
+    invite = {
+        sender: home,
+        field: field,
+        type: "easy",
+        observer: "-",
+        referee: "-",
+        city: city,
+        state: state,
+    };
     team2.invites.push(invite);
     await team2.save();
     return team2;
 }
 
-
 async function invitePrepare(home, guest, observer, field) {
     var team2 = await teamModel.findById(guest);
-    var invite = { sender: home, field: field, observer: observer, type: prepare };
+    var invite = { sender: home, field: field, observer: observer, type: "prepare" };
     await team2.invites.push(invite);
     await team2.save();
     return team2;
@@ -148,7 +232,7 @@ async function invitePrepare(home, guest, observer, field) {
 async function inviteTournament(home, guest, field, referee, observer) {
     var team2 = await teamModel.findById(guest);
     console.log(observer);
-    var invite = { sender: home, field: field, observer: observer, referee: referee, type: tournament };
+    var invite = { sender: home, field: field, observer: observer, referee: referee, type: "tournament" };
     team2.invites.push(invite);
     await team2.save();
     return team2;
@@ -156,7 +240,7 @@ async function inviteTournament(home, guest, field, referee, observer) {
 
 async function inviteLeague(home, guest, field, referee, observer) {
     var team2 = await teamModel.findById(guest);
-    var invite = { sender: home, field: field, referee: referee, observer: observer, type: league };
+    var invite = { sender: home, field: field, referee: referee, observer: observer, type: "league" };
     team2.invites.push(invite);
     await team2.save();
     return team2;

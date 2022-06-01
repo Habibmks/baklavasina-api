@@ -23,6 +23,8 @@ router.get('/byName/:name',t.findByName);
 
 //city değerini alır
 //takımları şehre göre dizi olarak gönderir []
+router.get('/byCity/:city',t.findByCity);
+
 router.get('/byState/:state',t.findByState);
 
 module.exports = router;

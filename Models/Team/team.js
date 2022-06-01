@@ -3,15 +3,12 @@ const mongoose = require('mongoose');
 const teamSchema = mongoose.Schema({
     name: {
         type: String,
-        required: true,
     },
     statistics: {
         type: String,
-        required: false,
     },
     captain: {
         type: String,
-        required: true,
     },
     contract: [
         {
@@ -27,22 +24,14 @@ const teamSchema = mongoose.Schema({
             }
         }
     ],
-    players: [
-        { type: String }
-    ],
+    players:[String],
     teamPower: {
         type: String,
-        required: false,
     },
     transfers: [
         {
-            transfer: {
-                type: String,
-            }
+            transfer: String,
         }
-    ],
-    leagues: [
-        { league: mongoose.ObjectId },
     ],
     invites: [
         {
@@ -50,17 +39,28 @@ const teamSchema = mongoose.Schema({
             field: String,
             observer: String,
             referee: String,
-            type: String
+            type: String,
+            city: String,
+            state: String
+            
         }
     ],
     tournaments: [
-        { tournament: mongoose.ObjectId },
+        { tournament: String },
     ],
     leagues: [
-        { league: mongoose.ObjectId },
+        { league: String },
     ],
     gender: Boolean,
-});
+    address: {
+        country: String,
+        city: String,
+        state: String,
+    },
+    type: String,
+},
+    { typeKey: '$type' },
+);
 
 const Team = mongoose.model('Team', teamSchema);
 

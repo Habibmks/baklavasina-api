@@ -5,36 +5,29 @@ const easyMatchSchema = mongoose.Schema({
     //Maç başlama tarihi saati
     startDate: {
         type: Date,
-        required: false,
     },
     //Halısaha
     field: {
         type: String,
-        required: false,
     },
     //Maçtaki kartlar
     cards: [
         {
             type: String,
-            required: false,
         }
     ],
     played: {
         type: Boolean,
-        required: true,
     },
     team1: {
         type: String,
-        required: true,
     },
     team2: {
         type: String,
-        required: true,
     },
     team1Goals: {
         count: {
             type: Number,
-            required: true,
             default: 0
         },
         goals: [
@@ -46,7 +39,6 @@ const easyMatchSchema = mongoose.Schema({
     team2Goals: {
         count: {
             type: Number,
-            required: true,
             default: 0
         },
         goals: [
@@ -58,7 +50,6 @@ const easyMatchSchema = mongoose.Schema({
     winner: {
         teamid: {
             type: String,
-            required: false,
         }
     },
 });

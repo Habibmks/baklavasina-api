@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const tournamentSchema = mongoose.Schema({
     teamCount: Number,
     teams: [
-        { team: mongoose.ObjectId },
+        { team: String },
     ],
     matches: [
-        { match: mongoose.ObjectId},
+        { match: String},
     ],
     name: String,
     

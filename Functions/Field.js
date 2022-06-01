@@ -37,4 +37,10 @@ const fieldByCity = async (req, res) => {
     return res.send(fields);
 }
 
-module.exports = {create,getAll,fieldByCity};
+const fieldByState = async (req, res) => {
+    const { city, state } = req.params;
+    const fields = await fieldModel.find({ city: city, state: state });
+    return res.send(fields);
+}
+
+module.exports = { create, getAll, fieldByCity };

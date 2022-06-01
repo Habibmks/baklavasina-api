@@ -11,6 +11,11 @@ const getAll = async (req, res) => {
     const people = await personModel.find();
     return res.status(200).send(people).end();
 }
+const del = async (req,res)=>{
+    const {userId} = req.params;
+    await personModel.findByIdAndDelete(userId);
+return res.send("silindi");
+}
 
 const login = async (req, res) => {
     email = req.body.email;
@@ -53,7 +58,11 @@ const register = async (req, res) => {
     //     city: req.body.city,
     //     state: req.body.state,
     // }
-    console.log(req.body);
+    var address={
+        country:req.body.country,
+        city:req.body.city,
+        state:req.body.state,
+    }
     if (v.registerValidation(name, surname) == null) {
         // const salt = await crypt.genSalt(10);
         // const saltedpass = await crypt.hash(req.body.password.toString(), salt);
@@ -67,17 +76,16 @@ const register = async (req, res) => {
             favTeam: favTeam,
             position: position,
             gender: gender,
+            captain: false,
+            team:null,
+            adress:address,
+            
         });
         newperson.save(function (error, resp) {
             if (error) {
-                return res.send(error);
+                return res.status(400).send(error);
             } else {
-                return res.status(200).json({
-                    name: name,
-                    id: newperson.id,
-                    surname: surname,
-                    email: email
-                });
+                return res.status(200).send(newperson);
             }
         });
     } else {
@@ -96,7 +104,7 @@ const update = async (req, res) => {
         name: name, surnam: surname, email: email,
         birthday: birthday, telNo: telNo, favTeam: favTeam,
     });
-    res.status(200).send(await personModel.find({id:id}));
+    res.status(200).send((await personModel.find({ id: id }))[0]);
 
 }
 
@@ -109,32 +117,36 @@ const getPerson = async (req, res) => {
 const teamRequest = async (req, res) => {
     const { teamId, personId, uniformNo, position, } = req.body;
     if (!mongoose.Types.ObjectId.isValid(teamId)) return res.status(404).send('invalid user or team id: ${id}');
-    const person = await personModel.findOne({id:personId});
+    const person = await personModel.findOne({ id: personId });
+    if (person.captain) return res.status(404).json({ error: "Player is a captain" });
     invite = { teamId: teamId, uniformNo: uniformNo, position: position };
     person.inviteTeam.push(invite);
-    person.save();
-    res.send(person);
+    await person.save();
+    return res.send(person);
 }
 
 const invites = async (req, res) => {
     const { id } = req.params;
     //if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
-    const person = await personModel.find({id:id});
+    const person = (await personModel.find({ id: id }))[0];
     if (!person) res.status(404).json({ error: "There is no user;" }).end();
     res.status(200).send(person.inviteTeam);
 }
 
+const dlete =async(req,res)=>{
+    const {userId}=req.body;
+    await personModel.findByIdAndDelete(userId);
+}
+
 const acceptInvite = async (req, res) => {
-    const { id, inviteId } = req.body;
+    const { id, inviteId, teamId } = req.body;
     if (!mongoose.Types.ObjectId.isValid(inviteId)) return res.status(404).send('invalid user or team id: ${id}');
-    const person = await personModel.find({id:id});
-    console.log(req.body);
-    console.log(person);
+    const person = (await personModel.find({ id: id }))[0];
+    if (person.team) return res.status(404).json({ error: "Player is already in team" });
     const invite = person.inviteTeam.find(invite => invite._id == inviteId);
-    //addPlayer()
     await addPlayer(person, invite.teamId);
     //createTransfer()
-    await newTransfer(person, invite.teamId);
+    await newTransfer(person, await teamModel.findOne({ _id: teamId }));
     await personModel.updateMany({}, {
         $pull: {
             inviteTeam: {
@@ -143,8 +155,8 @@ const acceptInvite = async (req, res) => {
         }
     });
 
-    res.status(200).json({
-        invites: (await personModel.findById(id)).inviteTeam,
+    return res.status(200).json({
+        invites: (await personModel.findOne({ id: id })).inviteTeam,
         transfers: (await transferModel.findOne({ player: id })),
         team: (await teamModel.findById(invite.teamId))
     });
@@ -152,24 +164,29 @@ const acceptInvite = async (req, res) => {
 
 async function addPlayer(person, teamId) {
     var team = await teamModel.findById(teamId);
-    await team.players.push(person._id);
+    await team.players.push(person.id);
     await team.save();
-    await personModel.findByIdAndUpdate(person._id, { team: teamId });
+    await personModel.findOneAndUpdate({ id: person.id }, { team: teamId });
+    // await personModel.findByIdAndUpdate(person._id, { team: teamId });
     return true;
 }
 
-const newTransfer = async (person, teamId) => {
+const newTransfer = async (person, team) => {
     if (person.teamId == null) var sender = "-";
     else var sender = person.team;
     const newTransfer = new transferModel({
         sender: sender,
-        receiver: teamId,
-        player: person._id,
+        receiver: team._id,
+        player: person.id,
         date: Date.now()
     });
     await newTransfer.save().catch((err) => {
         console.log(err);
     });
+    person.transfers.push(newTransfer);
+    person.save();
+    team.transfers.push(newTransfer);
+    team.save();
 }
 
 const rejectInvite = async (req, res) => {
@@ -183,7 +200,7 @@ const rejectInvite = async (req, res) => {
             }
         }
     });
-    const invites = (await personModel.findOne({id:id})).inviteTeam;
+    const invites = (await personModel.findOne({ id: id })).inviteTeam;
     res.status(200).send(invites);
 }
 
@@ -192,19 +209,20 @@ const updateTeam = async (req, res) => {
 
 }
 
+const leaveTeam=async(req,res)=>{
+    const {personId}=req.params;
+    const person = await personModel.findOne({id:personId});
+    person.team=null;
+    person.save();
+    return res.send(person);
+}
+
 const newReferee = async (req, res) => {
     const { id } = req.body;
     const person = await personModel.findById(id);
     person.type.referee = true;
     await person.save();
     res.send(person);
-    // await personModel.findByIdAndUpdate(id,
-    //     { type: { referee: true } },
-    //     function (err, doc) {
-    //         if (err) res.status(400).send(err);
-    //         else res.status(200).send(doc);
-    //     }
-    // );
 }
 
 const resetReferee = async (req, res) => {
@@ -244,24 +262,7 @@ module.exports = {
     newReferee,
     newObserver,
     resetReferee,
-    resetObserver
+    resetObserver,
+    leaveTeam,
+    del,
 };
-
-// (error, resp) => {
-//     console.log("fonksiyon");
-//     if (error) {
-//         console.log(error);
-//         return json({ result: false, error: error });
-//     } else {
-//         person.team = teamId;
-//         person.save(function (error, resp) {
-//             if (error) {
-//                 console.log(error);
-//                 return json({ result: false, error: error });
-//             } else {
-//                 console.log(person + "\n" + team);
-//                 return json({ result: true, person: person, team: team });
-//             }
-//         });
-//     };
-// }

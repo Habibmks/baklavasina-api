@@ -28,25 +28,21 @@ const personSchema = mongoose.Schema({
     //     type: String,
     //     required: true
     // },
-    token: [
-        {
-            type: String
-        },
-    ],
+    // token: [
+    //     {
+    //         type: String
+    //     },
+    // ],
     date: {
         type: Date,
         default: Date.now
     },
-    uniformNo: { type: String, required: false, },
     contrats: [
         {
             type: String, required: false,
         }
     ],
-    team: {
-        type: mongoose.ObjectId,
-        required: false
-    },
+    team: String,
     transfers: [
         {
             type: String, required: false,
@@ -56,6 +52,7 @@ const personSchema = mongoose.Schema({
         power: { type: Number, require: false },
         required: false,
     },
+    captain: Boolean,
     refereeRating: {
         totalScore: {
             type: Number, required: false
@@ -109,6 +106,7 @@ const personSchema = mongoose.Schema({
         }
     ],
     adress: {
+        country:String,
         city: { type: String },
         state: { type: String },
     },
@@ -126,13 +124,18 @@ const personSchema = mongoose.Schema({
     },
     inviteTeam: [
         {
-            teamId: mongoose.ObjectId,
+            teamId: String,
             uniformNo: String,
             position: String,
         }
     ],
     gender: Boolean,
     picture: String,
+    mevki: String,
+    goals: [
+        mongoose.ObjectId,
+    ],
+    uniformNo: { type: String, required: false, },
 }, personOptions)
 
 const Person = mongoose.model('PersonBase', personSchema);

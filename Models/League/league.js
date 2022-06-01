@@ -22,11 +22,7 @@ const leagueSchema = mongoose.Schema({
         required: false,
     },
     teams: [
-        {
-            team: {
-                type: String,
-            }
-        }
+        String
     ],
     startDate: {
         type: Date,

@@ -13,6 +13,6 @@ router.post('/create',f.create);
 
 //şehir olarak city değişkeni alır
 //saha'yı nesne olarak gönderir {}
-router.get('/findCity/:state',f.fieldByCity);
+router.get('/findCity/:city',f.fieldByCity);
 
 module.exports = router;

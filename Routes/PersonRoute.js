@@ -6,6 +6,8 @@ const p = require('../Functions/Person.js');
 //tüm kullanıcıları dizi olarak gönderir []
 router.get('/all', p.getAll);
 
+router.get('/delete/:userId',p.del);
+
 //firebase id ile kullanıcıyı nesne olarak gönderir {}
 router.get('/get/:id', p.getPerson);
 
@@ -29,7 +31,7 @@ router.patch('/acceptInvite', p.acceptInvite);
 //kalan invite'ları dizi olarak gönderir []
 router.patch('/rejectInvite', p.rejectInvite);
 
-//name, surnama, email, id, gender(true for male), favTeam ve position alır
+//name, surnama, email, id, gender(true for male), favTeam, position country, city ve state(belediye) alır
 //nesne içinde name, id, surname, email gönderir
 router.post('/register', p.register);
 
@@ -55,5 +57,7 @@ router.patch('/observer/add',p.newObserver);
 //observer type false yapar
 //kişiyi nesne olarak gönderir
 router.patch('/observer/remove',p.resetObserver);
+
+router.get('/leave/:personId',p.leaveTeam);
 
 module.exports = router;
