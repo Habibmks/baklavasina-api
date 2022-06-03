@@ -30,26 +30,12 @@ const macthSchema = mongoose.Schema({
     guest: {
         type: String,
     },
-    team1Goals: {
-        count: {
-            type: Number,
-        },
-        goals: [
-            {
-                goalId: { type: String }
-            }
-        ]
-    },
-    team2Goals: {
-        count: {
-            type: Number,
-        },
-        goals: [
-            {
-                goalId: { type: String }
-            }
-        ]
-    },
+    team1Goals: [
+        mongoose.ObjectId,
+    ],
+    team2Goals: [
+        mongoose.ObjectId,
+    ],
     winner: {
         teamid: {
             type: String,

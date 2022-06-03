@@ -8,7 +8,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 var allowedOrigins = [
     'http://localhost:8200',
-    'http://127.1.1.1:8200'
+    'http://127.0.0.1:8200',
+    "http://baklavasina:8000",
+    "http://172.104.140.216:8080",
 ];
 app.use(cors({
     origin: function (origin, callback) {    // allow requests with no origin 

@@ -57,4 +57,9 @@ router.get('/byState',m.findByState);
 //returns goal
 router.post('/add/goal',m.addGoal);
 
+router.post('/add/card',m.addCard);
+
+//matchId alıp maçı bitirir
+router.get('/finish/:matchId',m.finish);
+
 module.exports = router;

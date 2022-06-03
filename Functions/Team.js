@@ -64,13 +64,42 @@ const matchRequest = async (req, res) => {
             ));
             break;
         case "league":
-            return res.send((await inviteLeague(homeId, guestId, saha, req.body.referee, req.body.observer)));
+            return res.send((
+                await inviteLeague(
+                    homeId,
+                    guestId,
+                    saha,
+                    req.body.referee,
+                    req.body.observer,
+                    city,
+                    state,
+                )
+            ));
             break;
         case "prepare":
-            return res.send((await invitePrepare(homeId, guestId, req.body.observer, saha)));
+            return res.send((
+                await invitePrepare(
+                    homeId,
+                    guestId,
+                    req.body.observer,
+                    saha,
+                    city,
+                    state,
+                )
+            ));
             break;
         case "tournament":
-            return res.send((await inviteTournament(homeId, guestId, saha, req.body.referee, req.body.observer)));
+            return res.send((
+                await inviteTournament(
+                    homeId,
+                    guestId,
+                    saha,
+                    req.body.referee,
+                    req.body.observer,
+                    city,
+                    state,
+                )
+            ));
             break;
         default:
             break;
@@ -221,26 +250,48 @@ async function inviteEasy(home, guest, field, city, state) {
     return team2;
 }
 
-async function invitePrepare(home, guest, observer, field) {
+async function invitePrepare(home, guest, observer, field, city, state) {
     var team2 = await teamModel.findById(guest);
-    var invite = { sender: home, field: field, observer: observer, type: "prepare" };
+    var invite = {
+        sender: home,
+        field: field,
+        observer: observer,
+        type: "prepare",
+        city: city,
+        state: state,
+    };
     await team2.invites.push(invite);
     await team2.save();
     return team2;
 }
 
-async function inviteTournament(home, guest, field, referee, observer) {
+async function inviteTournament(home, guest, field, referee, observer, city, state) {
     var team2 = await teamModel.findById(guest);
-    console.log(observer);
-    var invite = { sender: home, field: field, observer: observer, referee: referee, type: "tournament" };
+    var invite = {
+        sender: home,
+        field: field,
+        observer: observer,
+        referee: referee,
+        type: "tournament",
+        city: city,
+        state: state,
+    };
     team2.invites.push(invite);
     await team2.save();
     return team2;
 }
 
-async function inviteLeague(home, guest, field, referee, observer) {
+async function inviteLeague(home, guest, field, referee, observer, city, state) {
     var team2 = await teamModel.findById(guest);
-    var invite = { sender: home, field: field, referee: referee, observer: observer, type: "league" };
+    var invite = {
+        sender: home,
+        field: field,
+        referee: referee,
+        observer: observer,
+        type: "league",
+        city: city,
+        state: state,
+    };
     team2.invites.push(invite);
     await team2.save();
     return team2;

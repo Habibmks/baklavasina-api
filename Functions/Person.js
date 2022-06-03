@@ -11,10 +11,10 @@ const getAll = async (req, res) => {
     const people = await personModel.find();
     return res.status(200).send(people).end();
 }
-const del = async (req,res)=>{
-    const {userId} = req.params;
+const del = async (req, res) => {
+    const { userId } = req.params;
     await personModel.findByIdAndDelete(userId);
-return res.send("silindi");
+    return res.send("silindi");
 }
 
 const login = async (req, res) => {
@@ -58,10 +58,10 @@ const register = async (req, res) => {
     //     city: req.body.city,
     //     state: req.body.state,
     // }
-    var address={
-        country:req.body.country,
-        city:req.body.city,
-        state:req.body.state,
+    var address = {
+        country: req.body.country,
+        city: req.body.city,
+        state: req.body.state,
     }
     if (v.registerValidation(name, surname) == null) {
         // const salt = await crypt.genSalt(10);
@@ -77,9 +77,9 @@ const register = async (req, res) => {
             position: position,
             gender: gender,
             captain: false,
-            team:null,
-            adress:address,
-            
+            team: null,
+            adress: address,
+
         });
         newperson.save(function (error, resp) {
             if (error) {
@@ -133,8 +133,8 @@ const invites = async (req, res) => {
     res.status(200).send(person.inviteTeam);
 }
 
-const dlete =async(req,res)=>{
-    const {userId}=req.body;
+const dlete = async (req, res) => {
+    const { userId } = req.body;
     await personModel.findByIdAndDelete(userId);
 }
 
@@ -209,10 +209,10 @@ const updateTeam = async (req, res) => {
 
 }
 
-const leaveTeam=async(req,res)=>{
-    const {personId}=req.params;
-    const person = await personModel.findOne({id:personId});
-    person.team=null;
+const leaveTeam = async (req, res) => {
+    const { personId } = req.params;
+    const person = await personModel.findOne({ id: personId });
+    person.team = null;
     person.save();
     return res.send(person);
 }

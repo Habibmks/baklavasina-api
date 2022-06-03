@@ -10,7 +10,6 @@ const v = require('./Validations.js');
 const t = require('./Team.js');
 const res = require('express/lib/response');
 const { default: mongoose } = require('mongoose');
-const { restart } = require('nodemon');
 
 const getAll = async (req, res) => {
     const matches = await matchModel.find();
@@ -21,8 +20,8 @@ const getMatch = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid id');
     const match = await matchModel.findById(id);
-    const home = await teamModel.findById(match.team1);
-    const guest = await teamModel.findById(match.team2);
+    const home = await teamModel.findById(match.home);
+    const guest = await teamModel.findById(match.guest);
     const homePlayers = await teamPlayers(home._id);
     const guestPlayers = await teamPlayers(guest._id);
     if (!match) return res.status(404).json({ error: "There is no match " + id });
@@ -33,6 +32,14 @@ const getMatch = async (req, res) => {
         homePlayers: homePlayers,
         guestPlayers: guestPlayers,
     });
+}
+
+const finish=async(req,res)=>{
+    const {matchId}=req.params;
+    const match=await matchModel.findById(matchId);
+    match.played=true;
+    match.save();
+    return res.send(match);
 }
 
 async function teamPlayers(teamId) {
@@ -192,7 +199,7 @@ const findByState = async (req, res) => {
 }
 
 const addGoal = async (req, res) => {
-    const { teamId, personId, matchId, minute, penalty } = req.body;
+    const { team, personId, matchId, minute, penalty } = req.body;
     const goal = new goalModel({
         team: teamId,
         penalty: penalty,
@@ -200,21 +207,32 @@ const addGoal = async (req, res) => {
         match: matchId,
         player: personId,
     });
+    const match = await matchModel.findById(matchId);
+    if(team == "home") var teamId = match.home;
+    else var teamId = match.guest;
+    console.log(match);
+    goal.save();
+    match.team1Goals.push(goal._id);
     match.save();
-    return res.status(200).send(goal);
+    return res.status(200).send(match);
 }
 
 const addCard = async (req, res) => {
-    const { color, match, player, penalty, team } = req.body;
+    const { color, matchId, player, penalty, team } = req.body;
     const card = new cardModel({
         color: color,
-        match: match,
+        match: matchId,
         player: player,
         penalty: penalty,
         team: team,
     });
+    const match = await matchModel.findById(matchId);
+    if(team == "home") var teamId = match.home;
+    else var teamId = match.guest;
     card.save();
-    return res.status(200).send(card);
+    match.cards.push(card._id);
+    match.save();
+    return res.status(200).send(match);
 }
 
 module.exports = {
@@ -228,4 +246,5 @@ module.exports = {
     getMatch,
     addCard,
     addGoal,
+    finish,
 };
