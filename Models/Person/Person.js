@@ -44,9 +44,12 @@ const personSchema = mongoose.Schema({
     ],
     team: String,
     transfers: [
-        {
-            type: String, required: false,
-        }
+
+        String,
+        String,
+        String,
+        Date,
+
     ],
     pPower: {
         power: { type: Number, require: false },
