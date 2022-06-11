@@ -247,4 +247,5 @@ module.exports = {
     addCard,
     addGoal,
     finish,
+    teamPlayers,
 };

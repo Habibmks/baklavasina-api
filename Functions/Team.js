@@ -18,7 +18,11 @@ const getTeam = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid id');
     const team = await teamModel.findById(id);
     if (!team) return res.status(404).json({ error: "There is no team" + id });
-    return res.status(200).send(team);
+    const players = await m.teamPlayers(id);
+    return res.status(200).json({
+        team: team,
+        players: players,
+    });
 }
 
 const createTeam = async (req, res) => {

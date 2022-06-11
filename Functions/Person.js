@@ -101,7 +101,7 @@ const update = async (req, res) => {
     //const saltedPass = await crypt.hash(password.toString(), await crypt.genSalt(10));
 
     await personModel.findOneAndUpdate({ id: id }, {
-        name: name, surnam: surname, email: email,
+        name: name, surname: surname, email: email,
         birthday: birthday, telNo: telNo, favTeam: favTeam,
     });
     res.status(200).send((await personModel.find({ id: id }))[0]);

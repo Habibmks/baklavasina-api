@@ -11,7 +11,7 @@ router.get('/all',t.getAll);
 router.post('/create',t.createTeam);
 
 //id ile team'i nesne olarak gönderir
-router.get('team/:id',t.getTeam);
+router.get('/:id',t.getTeam);
 
 //gender değerini boolean olarak alır (true for male)
 //takımı dizi olarak gönderir []
