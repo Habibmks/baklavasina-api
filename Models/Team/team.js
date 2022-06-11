@@ -17,12 +17,12 @@ const teamSchema = mongoose.Schema({
         type: String,
     },
     transfers: [
-        {
-            sender: String,
-            receiver: String,
-            player: String,
-            date: Date,
-        }
+
+        String,
+        String,
+        String,
+        Date,
+
     ],
     invites: [
         {
