@@ -34,10 +34,10 @@ const getMatch = async (req, res) => {
     });
 }
 
-const finish=async(req,res)=>{
-    const {matchId}=req.params;
-    const match=await matchModel.findById(matchId);
-    match.played=true;
+const finish = async (req, res) => {
+    const { matchId } = req.params;
+    const match = await matchModel.findById(matchId);
+    match.played = true;
     match.save();
     return res.send(match);
 }
@@ -55,6 +55,8 @@ async function teamPlayers(teamId) {
 }
 
 async function createEasy(home, guest, field, inviteId, homePlayers, guestPlayers, city, state) {
+    var team1 = await teamModel.findById(home).catch((err) => { console.log(err) });
+    var team2 = await teamModel.findById(guest);
     var match = new matchModel({
         type: "easy",
         home: home,
@@ -65,15 +67,15 @@ async function createEasy(home, guest, field, inviteId, homePlayers, guestPlayer
         guestPlayers: guestPlayers,
         city: city,
         state: state,
+        homeName: team1.name,
+        guestName: team2.name,
     });
-    var team1 = await teamModel.findById(home).catch((err) => { console.log(err) });
-    var team2 = await teamModel.findById(guest);
     await match.save().catch((err) => {
         return err;
     });
-    await team1.matches.push(match);
+    await team1.matches.push(match._id);
     await team1.save();
-    await team2.matches.push(match);
+    await team2.matches.push(match._id);
     await team2.save();
     await teamModel.updateMany({}, {
         $pull: {
@@ -155,19 +157,19 @@ async function createLeague(home, guest, field, referee, observer, inviteId, hom
     return match;
 }
 
-async function createTournament(home, guest, field, referee, observer,inviteId,homePlayers,guestPlayers,city,state,tournamentId) {
+async function createTournament(home, guest, field, referee, observer, inviteId, homePlayers, guestPlayers, city, state, tournamentId) {
     var match = new MatchModel({
-        type:"tournament",
+        type: "tournament",
         team1: home,
         team2: guest,
         referee: referee,
         observer: observer,
         field: field,
         played: false,
-        homePlayers:homePlayers,
-        guestPlayers:guestPlayers,
-        city:city,
-        state:state,
+        homePlayers: homePlayers,
+        guestPlayers: guestPlayers,
+        city: city,
+        state: state,
     });
     var team1 = await teamModel.findById(home);
     var team2 = await teamModel.findById(guest);
@@ -178,15 +180,15 @@ async function createTournament(home, guest, field, referee, observer,inviteId,h
     await team1.save();
     await team2.matches.push(match);
     await team2.save();
-    await tournamentModel.updateMany({_id:tournamentId},{
+    await tournamentModel.updateMany({ _id: tournamentId }, {
         $push: {
-            teams:teamId,
+            teams: teamId,
         }
     });
-    await teamModel.updateMany({},{
-        $pull:{
-            invites:{
-                _id:inviteId,
+    await teamModel.updateMany({}, {
+        $pull: {
+            invites: {
+                _id: inviteId,
             }
         }
     });
@@ -199,19 +201,34 @@ const findByState = async (req, res) => {
 }
 
 const addGoal = async (req, res) => {
-    const { team, personId, matchId, minute, penalty } = req.body;
+    const { team, personId, matchId, minute, penalty, assist } = req.body;
+
+    const match = await matchModel.findById(matchId);
+    if(!match) return res.status(404).json({
+        error:"match couldn't be find",
+    })
+    if (team == "home") var teamId = match.home;
+    else var teamId = match.guest;
+    console.log(match);
     const goal = new goalModel({
         team: teamId,
         penalty: penalty,
         minute: minute,
         match: matchId,
         player: personId,
+        assist: assist,
     });
-    const match = await matchModel.findById(matchId);
-    if(team == "home") var teamId = match.home;
-    else var teamId = match.guest;
-    console.log(match);
     goal.save();
+    await personModel.findOneAndUpdate({ id: personId }, {
+        $push: {
+            goals: goal._id,
+        }
+    });
+    await personModel.findOneAndUpdate({ id: assist }, {
+        $push: {
+            assist: goal._id,
+        }
+    })
     match.team1Goals.push(goal._id);
     match.save();
     return res.status(200).send(match);
@@ -227,7 +244,7 @@ const addCard = async (req, res) => {
         team: team,
     });
     const match = await matchModel.findById(matchId);
-    if(team == "home") var teamId = match.home;
+    if (team == "home") var teamId = match.home;
     else var teamId = match.guest;
     card.save();
     match.cards.push(card._id);

@@ -35,6 +35,13 @@ router.patch('/rejectInvite', p.rejectInvite);
 //nesne içinde name, id, surname, email gönderir
 router.post('/register', p.register);
 
+//personId ve photoUrl değişkenlerini alır
+//person tipinden değer gönderir
+router.post('/update/photo',p.photoUpdate);
+
+
+router.get('/statistic/:personId',p.personStatistics);
+
 //kullanılmayacak
 router.post('/login', p.login);
 

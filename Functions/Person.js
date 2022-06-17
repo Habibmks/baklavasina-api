@@ -17,6 +17,23 @@ const del = async (req, res) => {
     return res.send("silindi");
 }
 
+const photoUpdate = async (req, res) => {
+    const { personId, photoUrl } = req.body;
+    await personModel.findOneAndUpdate({ id: personId }, { picture: photoUrl });
+    return res.send(await personModel.findOne({ id: personId }));
+}
+
+const personStatistics = async (req, res) => {
+    const personId = req.params.personId;
+    const person = await personModel.findOne({ id: personId });
+
+    return res.json({
+        goalCount: person.goals.length,
+        matches: person.matches,
+        assistCount: person.assist.length,
+    })
+}
+
 const login = async (req, res) => {
     email = req.body.email;
     password = req.body.password;
@@ -265,4 +282,6 @@ module.exports = {
     resetObserver,
     leaveTeam,
     del,
+    photoUpdate,
+    personStatistics,
 };

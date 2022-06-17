@@ -44,12 +44,12 @@ const personSchema = mongoose.Schema({
     ],
     team: String,
     transfers: [
-
-        String,
-        String,
-        String,
-        Date,
-
+        {
+            sender: String,
+            receiver: String,
+            player: String,
+            date: Date,
+        }
     ],
     pPower: {
         power: { type: Number, require: false },
@@ -109,7 +109,7 @@ const personSchema = mongoose.Schema({
         }
     ],
     adress: {
-        country:String,
+        country: String,
         city: { type: String },
         state: { type: String },
     },
@@ -136,6 +136,9 @@ const personSchema = mongoose.Schema({
     picture: String,
     mevki: String,
     goals: [
+        mongoose.ObjectId,
+    ],
+    assist:[
         mongoose.ObjectId,
     ],
     uniformNo: { type: String, required: false, },

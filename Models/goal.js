@@ -21,6 +21,7 @@ const goalScheam = mongoose.Schema({
         type: String,
         required: true,
     },
+    assist: String,
 });
 
 const Goal = mongoose.model('Goal', goalScheam);

@@ -69,7 +69,9 @@ const macthSchema = mongoose.Schema({
     ],
     guestPlayers:[
         String,
-    ]
+    ],
+    homeName: String,
+    guestName: String,
 }, matchOptions);
 
 const Match = mongoose.model('MatchBase', macthSchema);
