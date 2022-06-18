@@ -13,6 +13,12 @@ router.post('/create',t.createTeam);
 //id ile team'i nesne olarak gönderir
 router.get('/:id',t.getTeam);
 
+//id ile sadece takım döndürür
+router.get('/gett/:id',t.gettTeam);
+
+//returns team players' information
+router.get('/gett/players/:id',t.gettPlayers);
+
 //gender değerini boolean olarak alır (true for male)
 //takımı dizi olarak gönderir []
 router.get('/byGender/:gender',t.findByGender);

@@ -15,6 +15,15 @@ const getAll = async (req, res) => {
 
 const del = async (req, res) => {
     const { teamId } = req.params;
+    await personModel.findOneAndUpdate(
+        {
+            id: await (teamModel.findOne({ _id: teamId })).captain
+        },
+        {
+            team: null,
+            captain: false,
+        },
+    );
     await teamModel.findByIdAndDelete(teamId);
     return res.send("silindi");
 }
@@ -31,8 +40,26 @@ const getTeam = async (req, res) => {
     });
 }
 
+const gettTeam = async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid id');
+    const team = await teamModel.findById(id);
+    if (!team) return res.status(404).json({ error: "There is no team" + id });
+    const players = await m.teamPlayers(id);
+    return res.status(200).send(team);
+}
+
+const gettPlayers = async (req,res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid id');
+    const team = await teamModel.findById(id);
+    if (!team) return res.status(404).json({ error: "There is no team" + id });
+    const players = await m.teamPlayers(id);
+    return res.status(200).send(players);
+}
+
 const createTeam = async (req, res) => {
-    const { personId, teamName,photoUrl } = req.body;
+    const { personId, teamName, photoUrl } = req.body;
     // if (!mongoose.Types.ObjectId.isValid(personId))
     //     return res.status(404).send('invalid user id: ${id}');
     const person = await personModel.findOne({ id: personId });
@@ -244,6 +271,8 @@ module.exports = {
     findByCity,
     findByState,
     del,
+    gettTeam,
+    gettPlayers,
 };
 
 async function inviteEasy(home, guest, field, city, state) {
