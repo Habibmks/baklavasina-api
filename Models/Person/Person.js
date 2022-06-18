@@ -113,12 +113,8 @@ const personSchema = mongoose.Schema({
         city: { type: String },
         state: { type: String },
     },
-    telNo: {
-        type: Number
-    },
-    birthday: {
-        type: String
-    },
+    telNo: String,
+    age: String,
     favTeam: {
         type: String
     },
@@ -141,7 +137,7 @@ const personSchema = mongoose.Schema({
     assist:[
         mongoose.ObjectId,
     ],
-    uniformNo: { type: String, required: false, },
+    uniformNo: String,
 }, personOptions)
 
 const Person = mongoose.model('PersonBase', personSchema);

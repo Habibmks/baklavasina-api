@@ -67,6 +67,9 @@ const register = async (req, res) => {
     var gender = req.body.gender;
     var favTeam = req.body.favTeam;
     var position = req.body.position;
+    var uniformNo = req.body.uniformNo;
+    var age = req.body.age;
+    var telNo = req.body.telNo;
     // var person = personModel.findOne({ email: email});
     // if(person){
     //     res.status(409).json({ error: "Already registered", }).end();
@@ -96,7 +99,9 @@ const register = async (req, res) => {
             captain: false,
             team: null,
             adress: address,
-
+            age: age,
+            uniformNo: uniformNo,
+            telNo: telNo,
         });
         newperson.save(function (error, resp) {
             if (error) {
