@@ -6,7 +6,7 @@ const t = require('../Functions/Team.js');
 //tüm takımları dizi olarak gönderir
 router.get('/all',t.getAll);
 
-//personId ve teamName alır
+//personId ve teamName alır, photoUrl
 //takımı nesne olarak gönderir
 router.post('/create',t.createTeam);
 

@@ -26,7 +26,7 @@ const getTeam = async (req, res) => {
 }
 
 const createTeam = async (req, res) => {
-    const { personId, teamName } = req.body;
+    const { personId, teamName,photoUrl } = req.body;
     // if (!mongoose.Types.ObjectId.isValid(personId))
     //     return res.status(404).send('invalid user id: ${id}');
     const person = await personModel.findOne({ id: personId });
@@ -35,6 +35,7 @@ const createTeam = async (req, res) => {
         name: teamName,
         gender: person.gender,
         address: person.adress,
+        photoUrl: photoUrl,
     });
     person.team = newTeam._id;
     person.captain = true;
