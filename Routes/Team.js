@@ -18,7 +18,7 @@ router.get('/:id',t.getTeam);
 router.get('/byGender/:gender',t.findByGender);
 
 
-router.get('/delete/:teamId')
+router.get('/delete/:teamId',t.del);
 
 //name değerini alır
 //takımları dizi olarak gönderir []
