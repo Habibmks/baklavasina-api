@@ -39,7 +39,8 @@ router.post('/register', p.register);
 //person tipinden değer gönderir
 router.post('/update/photo',p.photoUpdate);
 
-
+//personId alarak kişinin maçlarını gol sayısını ve asistlerini döndürür
+//matches, goalCount, assistCount
 router.get('/statistic/:personId',p.personStatistics);
 
 //kullanılmayacak
