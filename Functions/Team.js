@@ -13,6 +13,12 @@ const getAll = async (req, res) => {
     return res.status(200).send(await teamModel.find()).end();
 }
 
+const del = async (req, res) => {
+    const { teamId } = req.params;
+    await teamModel.findByIdAndDelete(teamId);
+    return res.send("silindi");
+}
+
 const getTeam = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid id');
@@ -237,6 +243,7 @@ module.exports = {
     findByName,
     findByCity,
     findByState,
+    del,
 };
 
 async function inviteEasy(home, guest, field, city, state) {

@@ -13,7 +13,7 @@ const getAll = async (req, res) => {
 }
 const del = async (req, res) => {
     const { userId } = req.params;
-    await personModel.findByIdAndDelete(userId);
+    await personModel.findOneAndDelete({ id: userId });
     return res.send("silindi");
 }
 
