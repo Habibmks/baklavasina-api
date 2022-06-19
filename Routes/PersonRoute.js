@@ -14,7 +14,7 @@ router.get('/get/:id', p.getPerson);
 //teamId personId uniformNo ve position değişkenleri ile
 //takım kaptanı bir oyuncuya takıma katılma daveti gönderir
 //davet gönderilen kişiyi nesne olarak gönderir {}
-router.patch('/teamInvite', p.teamRequest);
+router.post('/teamInvite', p.teamRequest);
 
 //kişinin id'sini id olarak alıp
 //davetleri dizi olarak gönderir []
@@ -24,7 +24,7 @@ router.get('/invites/:id', p.invites);
 //oyuncu davet gönderen takıma eklenir
 //takım, oyuncunun takımına eklenir
 //invites, transfers, ve team geri nesne olarak gönderilir {}
-router.patch('/acceptInvite', p.acceptInvite);
+router.post('/acceptInvite', p.acceptInvite);
 
 //id ve inviteId alıp
 //belirtilen invite'ı silip
