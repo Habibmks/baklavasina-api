@@ -138,6 +138,7 @@ const personSchema = mongoose.Schema({
         mongoose.ObjectId,
     ],
     uniformNo: String,
+    teamName: String,
 }, personOptions)
 
 const Person = mongoose.model('PersonBase', personSchema);

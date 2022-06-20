@@ -49,6 +49,7 @@ const teamSchema = mongoose.Schema({
     },
     type: String,
     photoUrl: String,
+    captainName: String,
 },
     { typeKey: '$type' },
 );

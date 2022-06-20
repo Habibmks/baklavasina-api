@@ -29,7 +29,7 @@ router.post('/acceptInvite', p.acceptInvite);
 //id ve inviteId alıp
 //belirtilen invite'ı silip
 //kalan invite'ları dizi olarak gönderir []
-router.patch('/rejectInvite', p.rejectInvite);
+router.post('/rejectInvite', p.rejectInvite);
 
 //name, surnama, email, id, gender(true for male), favTeam, position country, city ve state(belediye) alır
 //nesne içinde name, id, surname, email gönderir
@@ -48,23 +48,23 @@ router.post('/login', p.login);
 
 //name, surname, email, id, birthday, telNo, favTeam alır
 //kişiyi nesne olarak gönderir {}
-router.patch('/update', p.update);
+router.post('/update', p.update);
 
 //referee type true yapar
 //kişiyi nesne olarak gönderir {}
-router.patch('/referee/add',p.newReferee);
+router.post('/referee/add',p.newReferee);
 
 //referee type false yapar
 //kişiyi nesne olarak gönderir {}
-router.patch('/referee/remove',p.resetReferee);
+router.post('/referee/remove',p.resetReferee);
 
 //observer type true yapar
 //kişiyi nesne olarak gönderir
-router.patch('/observer/add',p.newObserver);
+router.post('/observer/add',p.newObserver);
 
 //observer type false yapar
 //kişiyi nesne olarak gönderir
-router.patch('/observer/remove',p.resetObserver);
+router.post('/observer/remove',p.resetObserver);
 
 router.get('/leave/:personId',p.leaveTeam);
 

@@ -46,10 +46,12 @@ const gettTeam = async (req, res) => {
     const team = await teamModel.findById(id);
     if (!team) return res.status(404).json({ error: "There is no team" + id });
     const players = await m.teamPlayers(id);
+    var captain = await personModel.findOne({ id: team.captain });
+    team.captainName = captain.name;
     return res.status(200).send(team);
 }
 
-const gettPlayers = async (req,res) => {
+const gettPlayers = async (req, res) => {
     const { id } = req.params;
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid id');
     const team = await teamModel.findById(id);

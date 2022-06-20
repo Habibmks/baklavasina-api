@@ -133,7 +133,7 @@ const update = async (req, res) => {
 const getPerson = async (req, res) => {
     const { id } = req.params;
     //if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send('invalid user id: ${id}');
-    res.status(200).send(await personModel.find({ id: id }));
+    return res.status(200).send(await personModel.find({ id: id }));
 }
 
 const teamRequest = async (req, res) => {
